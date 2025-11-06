@@ -1,4 +1,5 @@
 import datetime
+import re
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -10,6 +11,13 @@ class Account:
     _account_counter = 1000  # Приватный атрибут для количества счетов
 
     def __init__(self, account_holder: str, balance: float = 0.0):
+        if not re.match(
+            r"^[А-ЯЁ][а-яё]+ [А-ЯЁ][а-яё]+$|^[A-Z][a-z]+ [A-Z][a-z]+$", account_holder
+        ):
+            raise ValueError(
+                "Имя владельца должно быть в формате 'Имя Фамилия' с заглавных букв, кириллицей или латиницей."
+            )
+
         if balance < 0:
             raise ValueError("Начальный баланс счёта, не может быть отрицательным.")
 
@@ -73,10 +81,15 @@ class Account:
         plt.figure(figsize=(10, 5))
         plt.plot(df["date_time"], df["balance_after"], marker="o", linestyle="-")
 
-        # Заголовок и подписи осей
         plt.title("Изменение баланса счета")
         plt.xlabel("Дата и время операции")
         plt.ylabel("Баланс после операции")
         plt.xticks(rotation=45)
         plt.tight_layout()
         plt.show()
+
+    def analyze_transactions(self, n):
+        sorted_ops = sorted(
+            self.operations_history, key=lambda x: (x.amount, x.date_time), reverse=True
+        )
+        return sorted_ops[:n]

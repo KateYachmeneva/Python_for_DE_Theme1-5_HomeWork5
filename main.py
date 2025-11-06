@@ -1,10 +1,11 @@
 from datetime import timedelta
 
 from account import Account
+from savings_account import SavingsAccount
 
 
 def main():
-    acc = Account("Екатерина", 1000)
+    acc = Account("Екатерина Ячменева", 1000)
 
     # делаем операции с шагом в минуту
     acc.deposit(500)
@@ -28,6 +29,24 @@ def main():
 
     # визуализация истории
     acc.plot_history()
+
+    try:
+        acc.deposit(200)
+        acc.deposit(-100)
+    except ValueError as e:
+        print("Ошибка при депозите:", e)
+
+    try:
+        acc.withdraw(200)
+        acc.withdraw(-50)
+    except ValueError as e:
+        print("Ошибка при снятии:", e)
+
+    print(acc.analyze_transactions(2))
+
+    s = SavingsAccount("Иван Иванов", 1000)
+    print(s.apply_interest(5))
+    print(s.withdraw(600))  # должно быть False
 
 
 if __name__ == "__main__":
